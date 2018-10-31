@@ -16,18 +16,17 @@ public class HeapAsArray {
 
 		if (size < capacity) {
 			heap[size] = val;
-			if (size < (capacity-1))
-				size++;
+			size++;
 		} else {
 			// Check if valid for max heap
-			if (compare(val, heap[size])) {
+			if (compare(val, heap[size-1])) {
 				// It's valid
-				heap[size] = val;
+				heap[size-1] = val;
 			}
 		}
 
 		// Re-Heap with New Value
-		int i = size;
+		int i = size-1;
 
 		while (compare(heap[i], heap[(i-1)/2])) {
 			// Bubble Up or Swap Value
@@ -43,12 +42,15 @@ public class HeapAsArray {
 	}
 
 	public int pop() {
+
+		if (size == 0) return -1;
+
 		int retVal = heap[0];
 		// Remove top
 		int i = 0;
 
 		// Bubble up values
-		while (i < capacity) {
+		while (i < (capacity/2) ) {
 			// Compare right to left
 			if (compare(heap[(2*i)+1], heap[(2*i)+2])) {
 				// Right is larger than left
@@ -81,11 +83,15 @@ public class HeapAsArray {
 	public static void main(String[] args) {
 		HeapAsArray heap = new HeapAsArray(12);
 
-		int N = 200;
+		int N = 20;
 
 		for (int i = 0; i < N; i++) {
-			int randomNum = (int) (Math.random() * (i/10));
-			heap.add(i);
+//			int randomNum = (int) (Math.random() * (i/5));
+			if (i % 5 == 0) {
+				System.out.println(heap.pop());
+			} else {
+				heap.add(i);
+			}
 			heap.printHeap();
 		}
 
