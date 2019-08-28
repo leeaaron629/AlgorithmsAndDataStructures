@@ -105,25 +105,40 @@ public class AlgorithmsForBST {
 
 	}
 
+	/**
+	 * We used the fresh nodes popped off the stack.
+	 *
+	 * 1st time we pop off stack we check if right exists.
+	 * 2nd time we pop off stack we check we print it and throw it away.
+	 *
+	 * @param root
+	 */
 	public static void postOrderTraversalDoublePush(TreeNode root) {
 		Stack<TreeNode> stack = new Stack<>();
 
 		while (true) {
+
 			while(root != null) {
+				// Go deep left and push all nodes into stack 2x.
 				stack.push(root);
 				stack.push(root);
 				root = root.left;
 			}
 
+			// Exit point for loop
 			if (stack.empty())
 				return;
 
+			// Popping node off stack
 			root = stack.pop();
 
 			if (!stack.empty() && stack.peek() == root)
+				// 1st time - Check right
 				root = root.right;
 			else {
+				// 2nd time - Print
 				System.out.print(root.val + " ");
+				// Throw it away
 				root = null;
 			}
 		}
