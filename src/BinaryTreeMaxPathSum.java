@@ -9,7 +9,7 @@ public class BinaryTreeMaxPathSum {
 
     public int maxPathSum(TreeNode root) {
 
-        Stack<TreeNode> stack = new TreeNode<>();
+        Stack<TreeNode> stack = new Stack<>();
 
         while(true) {
 
@@ -30,7 +30,6 @@ public class BinaryTreeMaxPathSum {
 
         }
 
-        return answer;
     }
 
     private int postOrderTraversal(TreeNode root) {
