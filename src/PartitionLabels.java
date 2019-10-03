@@ -27,25 +27,58 @@ public class PartitionLabels {
 
         }
 
-        charToBoundaries.forEach((k, v) -> {
-            System.out.println(k + " -> " + Arrays.toString(v));
-        });
+//        charToBoundaries.forEach((k, v) -> {
+//            System.out.println(k + " -> " + Arrays.toString(v));
+//        });
 
-        int[] heatMap = new int[cArr.length];
+        Map<Integer, Integer> boundaries = new HashMap<>();
 
-        charToBoundaries.forEach((character, boundaries) -> {
-            addToHeatMap(heatMap, boundaries);
-        });
+        for (int[] boundary : charToBoundaries.values()) {
 
-        System.out.println(Arrays.toString(heatMap));
+            int end = boundaries.getOrDefault(boundary[0], -1);
 
-        return Collections.emptyList();
-    }
+            if (end < 0) {
+                boundaries.put(boundary[0], boundary[1]);
+            }
 
-    private void addToHeatMap(int[] heatMap, int[] boundaries) {
-        for (int i = boundaries[0]; i <= boundaries[1]; i++) {
-            heatMap[i]++;
         }
+
+        List<int[]> mergedBoundaries = new ArrayList<>();
+
+        int beg = 0;
+        int end;
+
+        while(beg < cArr.length) {
+
+            end = boundaries.get(beg);
+
+            int[] partition = new int[]{beg, -1};
+
+            while (beg < end) {
+                if (boundaries.get(beg) != null) {
+                    end = Math.max(boundaries.get(beg), end);
+                }
+                beg++;
+            }
+
+            partition[1] = end;
+            mergedBoundaries.add(partition);
+
+            beg = end + 1;
+
+        }
+
+//        for (int[] partition : mergedBoundaries) {
+//            System.out.println(Arrays.toString(partition));
+//        }
+
+        List<Integer> answer = new ArrayList<>();
+
+        for (int[] partition : mergedBoundaries) {
+            answer.add(partition[1] - partition[0] + 1);
+        }
+
+        return answer;
     }
 
     @Test
