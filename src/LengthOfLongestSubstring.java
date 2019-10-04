@@ -4,6 +4,35 @@ import java.util.HashMap;
 
 public class LengthOfLongestSubstring {
 
+    public int lengthOfLongestSubstring3(String s) {
+
+        char[] cArr = s.toCharArray();
+        int runningSum = 0, max = runningSum;
+        int[] exists = new int[128];
+        int i = 0;
+
+        while (i < cArr.length) {
+            if (exists[cArr[i]] == 0) {
+                runningSum++;
+                exists[cArr[i]] = i+1; // Account for edge case, will subtract back later
+            } else {
+                // Reset
+                // Update max if need be
+                if (runningSum > max) {
+                    max = runningSum;
+                }
+                // Reset i to the first duplicate's position
+                i = exists[cArr[i]] - 1;
+                // Reset data
+                exists = new int[128];
+                runningSum = 0;
+            }
+            i++;
+        }
+
+        return runningSum > max ? runningSum : max;
+    }
+
     public int lengthOfLongestSubstring(String s) {
 
         int runningMax = 0, max = 0;
@@ -63,17 +92,21 @@ public class LengthOfLongestSubstring {
     @Test
     public void tests() {
 
-        int result = lengthOfLongestSubstring2("abcabcbb");
+        int result = lengthOfLongestSubstring3("abcabcbb");
         System.out.println(result);
         assert(result == 3);
 
-        result = lengthOfLongestSubstring2("bbbbb");
+        result = lengthOfLongestSubstring3("bbbbb");
         System.out.println(result);
         assert(result == 1);
 
-        result = lengthOfLongestSubstring2("dvdf");
+        result = lengthOfLongestSubstring3("dvxdf");
         System.out.println(result);
-        assert(result == 3);
+        assert(result == 4);
+
+        result = lengthOfLongestSubstring3("");
+        System.out.println(result);
+        assert(result == 0);
 
     }
 
