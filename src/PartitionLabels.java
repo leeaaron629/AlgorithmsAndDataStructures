@@ -10,7 +10,6 @@ public class PartitionLabels {
     public List<Integer> partitionLabels2(String S) {
 
         char[] cArr = S.toCharArray();
-
         int[] boundaryMap = new int[26];
 
         for (int i = 0; i < cArr.length; i++) {
@@ -18,28 +17,20 @@ public class PartitionLabels {
         }
 
         List<Integer> answers = new ArrayList<>();
-
         int beg = 0;
-
         while (beg < cArr.length) {
-
             int end = boundaryMap[cArr[beg] - 'a'];
             int partition = 0;
-
             while (beg < end) {
-
                 if (boundaryMap[cArr[beg] - 'a'] > end) {
                     end = boundaryMap[cArr[beg] - 'a'];
                 }
-
                 partition++;
                 beg++;
             }
-
             answers.add(partition+1);
             beg++;
         }
-
         return answers;
     }
 
