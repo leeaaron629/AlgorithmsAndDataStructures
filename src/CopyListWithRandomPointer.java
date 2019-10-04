@@ -1,6 +1,9 @@
 import datastructures.Node;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * https://leetcode.com/problems/copy-list-with-random-pointer/
  */
@@ -8,19 +11,48 @@ public class CopyListWithRandomPointer {
 
     public Node copyRandomList(Node head) {
 
+        if (head == null) return null;
+
         Node cur = head;
         Node copy = new Node();
         Node answer = copy;
-        while (cur != null) {
+        Map<Integer, Node> copiesMap = new HashMap<>();
+
+        if (cur != null) {
             copy.val = cur.val;
+            copiesMap.put(copy.val, copy);
+        }
+
+        while (cur != null) {
+
             if (cur.next != null) {
-                copy.next = new Node();
-                copy.next.val = cur.next.val;
+
+                Node nextCopy = copiesMap.get(cur.next.val);
+
+                if (nextCopy != null) {
+                    copy.next = nextCopy;
+                } else {
+                    copy.next = new Node();
+                    copy.next.val = cur.next.val;
+                    copiesMap.put(copy.next.val, copy.next);
+                }
+
             }
+
             if (cur.random != null) {
-                copy.random = new Node();
-                copy.random.val = cur.random.val;
+
+                Node randomCopy = copiesMap.get(cur.random.val);
+
+                if (randomCopy != null) {
+                    copy.random = randomCopy;
+                } else {
+                    copy.random = new Node();
+                    copy.random.val = cur.random.val;
+                    copiesMap.put(copy.random.val, copy.random);
+                }
+
             }
+
             copy = copy.next;
             cur = cur.next;
         }
@@ -40,10 +72,32 @@ public class CopyListWithRandomPointer {
 
         Node ans = copyRandomList(node_1);
 
-        while (ans != null) {
-            System.out.println(ans);
-            ans = ans.next;
+        printNodes(ans);
+
+    }
+
+    @Test
+    public void testNull() {
+        Node nullNode = copyRandomList(null);
+    }
+
+    @Test
+    public void testOne() {
+        Node oneNode = new Node(1);
+        oneNode.next = null;
+        oneNode.random = oneNode;
+
+        printNodes(copyRandomList(oneNode));
+    }
+
+    private void printNodes(Node node) {
+        if (node == null) {
+            System.out.println("NULL");
         }
 
+        while(node != null) {
+            System.out.println(node);
+            node = node.next;
+        }
     }
 }
