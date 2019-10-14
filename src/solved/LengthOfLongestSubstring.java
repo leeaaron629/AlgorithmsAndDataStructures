@@ -1,3 +1,5 @@
+package solved;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -42,6 +44,7 @@ public class LengthOfLongestSubstring {
         int i = 0;
 
         while (i < s.length()) {
+
 
             if (positionMap[s.charAt(i)] == 0) {
                 // not a duplicate

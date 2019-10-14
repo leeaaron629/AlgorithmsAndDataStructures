@@ -1,3 +1,5 @@
+package solved;
+
 import datastructures.Node;
 import org.junit.jupiter.api.Test;
 
