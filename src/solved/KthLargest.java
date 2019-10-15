@@ -1,3 +1,5 @@
+package solved;
+
 import java.util.PriorityQueue;
 
 public class KthLargest {

@@ -1,3 +1,5 @@
+package solved;
+
 public class mergeKSortedLists {
 
     public ListNode mergeKLists(ListNode[] lists) {

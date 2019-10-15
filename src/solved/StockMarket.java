@@ -1,3 +1,5 @@
+package solved;
+
 import java.util.Arrays;
 
 public class StockMarket {
