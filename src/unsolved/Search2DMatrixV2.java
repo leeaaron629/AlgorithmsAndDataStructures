@@ -11,18 +11,8 @@ public class Search2DMatrixV2 {
 
         if (matrix.length == 0) return false;
 
-        int beg = 0; int end = matrix.length - 1;
-
-        while (beg <= end) {
-            int mid = (beg + end) / 2;
-
-            if (binarySearch(matrix[mid], target)) {
-                return true;
-            } else if (target < matrix[mid][0]) {
-                end = mid - 1;
-            } else {
-                beg = mid + 1;
-            }
+        for (int[] ints : matrix) {
+            if (binarySearch(ints, target)) return true;
         }
 
         return false;
