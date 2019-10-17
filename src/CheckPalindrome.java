@@ -1,5 +1,6 @@
-import com.sun.xml.internal.ws.util.StringUtils;
-
+/**
+ * Recursive solution to check for Palindrome
+ */
 public class CheckPalindrome {
 	
 	public static void main(String[] args) {
