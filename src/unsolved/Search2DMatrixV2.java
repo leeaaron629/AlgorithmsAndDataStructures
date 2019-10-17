@@ -7,6 +7,33 @@ import org.junit.jupiter.api.Test;
  */
 public class Search2DMatrixV2 {
 
+    // Divide & Conquer Strategy to implement :)
+    // https://www.geeksforgeeks.org/search-in-a-row-wise-and-column-wise-sorted-2d-array-using-divide-and-conquer-algorithm/
+    public boolean searchMatrix3(int[][] matrix, int target) {
+        return false;
+    }
+
+    public boolean searchMatrix2(int[][] matrix, int target) {
+
+        if (matrix.length == 0) return false;
+
+        int i = 0;
+        int j = matrix[i].length - 1;
+
+        while (i < matrix.length && j >= 0){
+            if (target == matrix[i][j]) {
+                return true;
+            } else if (target > matrix[i][j]) {
+                i++;
+            } else if (target < matrix[i][j]) {
+                j--;
+            }
+        }
+
+        return false;
+
+    }
+
     public boolean searchMatrix(int[][] matrix, int target) {
 
         if (matrix.length == 0) return false;
