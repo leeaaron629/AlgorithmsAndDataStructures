@@ -11,7 +11,7 @@ public class BinaryTreeMaxPathSum {
 
         Stack<TreeNode> stack = new Stack<>();
 
-        while(true) {
+        while (true) {
 
             while(root != null) {
                 stack.push(root);

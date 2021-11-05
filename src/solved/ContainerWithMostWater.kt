@@ -1,9 +1,9 @@
-package unsolved
+package solved
 
 /**
  * https://leetcode.com/problems/container-with-most-water/
  */
-class ContainerWithMostWater {
+object ContainerWithMostWater {
     fun maxArea(height: IntArray): Int {
 
         var i = 0
@@ -30,8 +30,7 @@ class ContainerWithMostWater {
 }
 
 fun main() {
-    val containerWithMostWater = ContainerWithMostWater()
-    containerWithMostWater
+    ContainerWithMostWater
         .maxArea(intArrayOf(1,8,6,2,5,4,8,3,7))
         .also { println(it) }
 }
