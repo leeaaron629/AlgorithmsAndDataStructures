@@ -1,4 +1,4 @@
-package unsolved
+package solved
 
 import datastructures.TreeNode
 import java.util.*

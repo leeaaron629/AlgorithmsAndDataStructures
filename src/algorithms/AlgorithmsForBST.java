@@ -37,11 +37,9 @@ public class AlgorithmsForBST {
 				current = current.left;
 			}
 
-			if (current == null) {
-				current = stack.pop();
-				System.out.print(current.val + " ");
-				current = current.right;
-			}
+			current = stack.pop();
+			System.out.print(current.val + " ");
+			current = current.right;
 
 		}
 
