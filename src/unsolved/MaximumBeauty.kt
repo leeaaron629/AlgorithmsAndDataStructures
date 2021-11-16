@@ -1,0 +1,4 @@
+package unsolved
+
+object MaximumBeauty {
+}
