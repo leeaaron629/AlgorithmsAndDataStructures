@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Set
 
-def canFinish(numCourses: int, prerequisites: List[List[int]]) -> bool:
+def canFinishSlow(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
     
-    graph = [[] for i in range(numCourses)] 
+    graph = [[] for i in range(numCourses)]
     for i in range(len(graph)):
         graph[i] = [0 for i in range(numCourses)]
         
@@ -31,15 +31,48 @@ def canFinish(numCourses: int, prerequisites: List[List[int]]) -> bool:
                 finish_course(i, graph)
                 finishedCourses.add(i)
                 tryFinishCourse = True
-                
-    # See end end graph
-    for i in range(len(graph)):
-        print(graph[i])
+                break;
         
     # Check if all courses are finished
     if numCourses == len(finishedCourses):
-        return True    
-    
+        return True        
+        
+    return False
+
+def canFinish(numCourses: int, prerequisites: List[List[int]]) -> bool:
+
+        # Build course dependency graph
+        courseDependencies = [set() for courseN in range(numCourses)]
+            
+        for prereq in prerequisites:
+            courseFirst = prereq[0]
+            courseSecond = prereq[1]
+            courseDependencies[courseFirst].add(courseSecond)
+            
+        # Try finishing courses without prereq
+        def finish_course(n: int, courseDependencies: List[Set[int]]):
+            for prereqs in courseDependencies:
+                prereqs.discard(n)            
+        
+        tryFinishCourse = True
+        unfinishedCourses = set([courseN for courseN in range(numCourses)])
+        while tryFinishCourse:
+            tryFinishCourse = False
+            finishedCourses = set()
+            for n in unfinishedCourses:
+                if not courseDependencies[n]:
+                    finish_course(n, courseDependencies)
+                    finishedCourses.add(n)
+                    tryFinishCourse = True
+            unfinishedCourses = unfinishedCourses.difference(finishedCourses)
+        
+        for courseN in range(numCourses):
+            if courseDependencies[courseN]:
+                return False
+            
+        return True
+
+
     return False
 
 
