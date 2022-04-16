@@ -1,4 +1,4 @@
-from ast import List
+from typing import List
 
 def maxProfit(prices: List[int]) -> int:
     # [7,1,5,3,6,4,2,10]
