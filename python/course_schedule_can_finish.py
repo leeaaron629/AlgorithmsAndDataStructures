@@ -39,6 +39,8 @@ def canFinishSlow(self, numCourses: int, prerequisites: List[List[int]]) -> bool
         
     return False
 
+# https://leetcode.com/problems/course-schedule/
+
 def canFinish(numCourses: int, prerequisites: List[List[int]]) -> bool:
 
         # Build course dependency graph
