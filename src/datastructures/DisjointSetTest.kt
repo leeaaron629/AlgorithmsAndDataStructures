@@ -59,5 +59,22 @@ internal class DisjointSetTest {
         println("Disjoint Set:\n${disjointSet}")
     }
 
+    @Test
+    fun `test case A`() {
+        // [[3,4],[1,2],[2,4],[3,5],[2,5]]
+        val edges = listOf(
+            3 to 4,
+            1 to 2,
+            2 to 4,
+            3 to 5,
+            2 to 5
+        )
+        val disjointSet = DisjointSet<Int>()
+        for (e in edges) {
+            disjointSet.union(e1 = e.first, e2 = e.second)
+        }
+        println("Disjoint Set:\n${disjointSet}")
+    }
+
 
 }

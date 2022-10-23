@@ -31,26 +31,27 @@ class DisjointSet<E>(
                 parents[e2] = e1
             }
             parent1 != e1 && parent2 == e2 -> { // E2 itself is the parent
-                parents[e2] = parent1
                 val s1 = disjointSets[parent1] ?: emptySet()
                 val s2 = disjointSets[parent2] ?: setOf(e2)
                 disjointSets[parent1] = s1 + s2
+                parents[parent2] = parent1
                 // Remove the secondary set
                 disjointSets.remove(parent2)
             }
             parent1 == e1 && parent2 != e1 -> { // E1 itself is the parent
-                parents[e1] = parent2
                 val s1 = disjointSets[parent1] ?: setOf(e1)
                 val s2 = disjointSets[parent2] ?: emptySet()
                 disjointSets[parent2] = s1 + s2
+                parents[parent1] = parent2
                 // Remove the secondary set
                 disjointSets.remove(parent1)
             }
             parent1 != e1 && parent2 != e2 -> { // Both E1 and E2 has different parents and belongs to different set
                 val s1 = disjointSets[parent1] ?: emptySet()
-                disjointSets[parent1] = s1 + setOf(e1)
                 val s2 = disjointSets[parent2] ?: emptySet()
-                disjointSets[parent2] = s2 + setOf(e2)
+                disjointSets[parent1] = s1 + s2
+                parents[parent2] = parent1
+                disjointSets.remove(parent2)
             }
             else -> error("Illegal state between parents=${listOf(parent1, parent2)} and nodes=${listOf(e1, e2)}")
         }
