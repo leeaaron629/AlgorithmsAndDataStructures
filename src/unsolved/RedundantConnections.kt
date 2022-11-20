@@ -3,6 +3,9 @@ package unsolved
 import datastructures.DisjointSet
 import datastructures.DisjointSetDetailed
 
+/**
+ * https://leetcode.com/problems/redundant-connection/submissions/
+ */
 class RedundantConnections {
 
     fun findRedundantConnection(edges: Array<IntArray>): IntArray {
