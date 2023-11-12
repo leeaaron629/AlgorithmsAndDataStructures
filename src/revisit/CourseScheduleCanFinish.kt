@@ -7,7 +7,63 @@ import java.util.*
  */
 object CourseSchedule {
 
+    /**
+     * @param numCourses - the total number of courses to take
+     * @param prerequisites - definition of the course requirements - [A, B], where course B must be taken before A
+     */
     fun canFinish(numCourses: Int, prerequisites: Array<IntArray>): Boolean {
+
+        fun printAdjacencyMatrix(prefix: String? = null, adjacencyMatrix: Array<MutableSet<Int>>) {
+            if (prefix != null) println(prefix)
+            adjacencyMatrix.forEachIndexed { idx, req ->
+                println("$idx <- ${req.joinToString(",")}")
+            }
+        }
+
+        fun setPreReqs(adjacencyMatrix: Array<MutableSet<Int>>, courseA: Int, courseB: Int) {
+            adjacencyMatrix[courseA].add(courseB)
+        }
+
+            fun completeCourse(adjacencyMatrix: Array<MutableSet<Int>>, unfinishedCourses: MutableSet<Int>, courseToComplete: Int) {
+            require(courseToComplete in unfinishedCourses) { "Course to be complete must be in unfinished course set" }
+            unfinishedCourses.remove(courseToComplete)
+            unfinishedCourses.forEach { c ->
+                adjacencyMatrix[c].remove(courseToComplete)
+            }
+        }
+
+        // Build Adjacency Matrix
+        val adjacencyMatrix = Array(numCourses) { mutableSetOf<Int>() }
+        val unfinishedCourses = (0 until numCourses).toMutableSet()
+        prerequisites.forEach { req ->
+            setPreReqs(adjacencyMatrix = adjacencyMatrix, courseA = req[0], courseB = req[1])
+        }
+
+        printAdjacencyMatrix("Finished course completion...", adjacencyMatrix)
+
+        // Finish each course at a time
+        while (true) {
+            var aCourseIsCompleted = false
+            for (course in unfinishedCourses.toList()) {
+                val courseHasNoPreReqs = adjacencyMatrix[course].isEmpty()
+                if (courseHasNoPreReqs) {
+                    completeCourse(
+                        adjacencyMatrix = adjacencyMatrix,
+                        unfinishedCourses = unfinishedCourses,
+                        courseToComplete = course
+                    )
+                    aCourseIsCompleted = true
+                }
+            }
+            if (!aCourseIsCompleted) break
+        }
+
+        printAdjacencyMatrix("Finished course completion...", adjacencyMatrix)
+
+        return unfinishedCourses.isEmpty()
+    }
+
+    fun canFinishV1(numCourses: Int, prerequisites: Array<IntArray>): Boolean {
 
         if (prerequisites.isEmpty()) return true
 
