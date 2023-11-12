@@ -37,21 +37,26 @@ class PacificAtlanticWaterFlow {
         pacific: Array<BooleanArray>,
         heights: Array<IntArray>
     ): Pair<Int, Int> {
+
         if (visited[x][y] == 1) Pair(0, 0)
         // println("Visiting ($x, $y) - ${heights[x][y]}")
         visited[x][y] = 1 // Set to 1 for visited
         if (isByThePacific(x = x, y = y)) atlantic[x][y] = true
-        if (isByTheAtlantic(x = x, y = y, islandWidth = islandWidth, islandLength = islandLength)) pacific[x][y]
-        val score = when {
-            isByThePacific && isByTheAtlantic -> Pair(1, 1)
-            isByThePacific -> Pair(1, 0)
-            isByTheAtlantic -> Pair(0, 1)
-            else -> Pair(0, 0)
-        }
+        if (isByTheAtlantic(x = x, y = y, islandWidth = islandWidth, islandLength = islandLength)) pacific[x][y] = true
+
+//        val score = when {
+//            isByThePacific && isByTheAtlantic -> Pair(1, 1)
+//            isByThePacific -> Pair(1, 0)
+//            isByTheAtlantic -> Pair(0, 1)
+//            else -> Pair(0, 0)
+//        }
+
+        // TODO - Stubbed values remove later
+        val score = Pair(0, 0)
 
         val childrenScores = getValidNearbyLands(x, y, islandWidth, islandLength).map { (nextX, nextY) ->
             if (canFlowTo(sourceX = x, sourceY = y, targetX = nextX, targetY = nextY, heights = heights)) {
-                dfs(nextX, nextY, islandWidth, islandLength, visited, heights)
+                dfs(nextX, nextY, islandWidth, islandLength, visited, atlantic, pacific, heights)
             } else {
                 Pair(0, 0)
             }
