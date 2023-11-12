@@ -5,8 +5,49 @@ import java.util.*
 /**
  * https://leetcode.com/problems/course-schedule/
  */
-object CourseSchedule {
+object CourseScheduleI {
 
+    fun canFinishOptimized(numCourses: Int, prerequisites: Array<IntArray>): Boolean {
+        val nRequisites = IntArray(numCourses) { 0 }
+        val graph = Array<MutableList<Int>>(numCourses) { mutableListOf() }
+
+        for (pair in prerequisites) {
+            val course = pair[0]
+            val prerequisite = pair[1]
+
+            graph[prerequisite].add(course) // B -> A
+            // Keep track of all the degrees of a course
+            // Courses with a degree of 0 has no prerequisites
+            nRequisites[course]++
+        }
+
+        val coursesToFinish: Queue<Int> = LinkedList()
+
+        // Handle all courses with no requisites (vertex degrees)
+        for (i in 0 until numCourses) {
+            if (nRequisites[i] == 0) {
+                coursesToFinish.offer(i) // The queue is a list of all courses with no requisites
+            }
+        }
+
+        var count = 0
+        while (coursesToFinish.isNotEmpty()) {
+            // Finish the courses with no requisites
+            val course = coursesToFinish.poll()
+            count++
+
+            // Mark the requisites as completed in the isDegree
+            for (nextCourse in graph[course]) {
+                // Subtract the number of requisites from the course
+                nRequisites[nextCourse]--
+                if (nRequisites[nextCourse] == 0) { // If requisites is 0, then add it to the queue of coursesToFinish
+                    coursesToFinish.offer(nextCourse)
+                }
+            }
+        }
+
+        return count == numCourses
+    }
     /**
      * @param numCourses - the total number of courses to take
      * @param prerequisites - definition of the course requirements - [A, B], where course B must be taken before A
@@ -173,7 +214,7 @@ fun main() {
         intArrayOf(0,2),
     ).let { reqs ->
         println(reqs.joinToString(", ") { "[${it[0]}, ${it[1]}]"})
-        CourseSchedule.canFinish(3, reqs)
+        CourseScheduleI.canFinish(3, reqs)
     }.also { println("Answer: $it") }
 
     // [[1,4],[2,4],[3,1],[3,2]]
@@ -184,7 +225,7 @@ fun main() {
         intArrayOf(3,2)
     ).let { reqs ->
         println(reqs.joinToString(", ") { "[${it[0]}, ${it[1]}]"})
-        CourseSchedule.canFinish(5, reqs)
+        CourseScheduleI.canFinish(5, reqs)
     }.also {
         println("Answer: $it")
         assert(it)
@@ -202,7 +243,7 @@ fun main() {
         intArrayOf(6,1)
     ).let { reqs ->
         println(reqs.joinToString(", ") { "[${it[0]}, ${it[1]}]"})
-        CourseSchedule.canFinish(7, reqs)
+        CourseScheduleI.canFinish(7, reqs)
     }.also {
         println("Answer: $it")
         assert(it)
@@ -214,7 +255,7 @@ fun main() {
         intArrayOf(2, 0)
     ).let { reqs ->
         println(reqs.joinToString(", ") { "[${it[0]}, ${it[1]}]"})
-        CourseSchedule.canFinish(3, reqs)
+        CourseScheduleI.canFinish(3, reqs)
     }.also {
         println("Answer: $it")
         assert(!it)
@@ -226,7 +267,7 @@ fun main() {
         intArrayOf(2, 1)
     ).let { reqs ->
         println(reqs.joinToString(", ") { "[${it[0]}, ${it[1]}]"})
-        CourseSchedule.canFinish(3, reqs)
+        CourseScheduleI.canFinish(3, reqs)
     }.also {
         println("Answer: $it")
         assert(!it)
