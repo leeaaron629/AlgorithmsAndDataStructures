@@ -1,8 +1,11 @@
-package unsolved
+package solved
 
 import org.junit.jupiter.api.Test
 import java.util.*
 
+/**
+ * https://leetcode.com/problems/minimum-height-trees/
+ */
 class MinimumHeightTrees {
 
     private fun print(nGraphEdges: Array<Int>) {

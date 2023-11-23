@@ -3,6 +3,9 @@ package solved
 import org.junit.jupiter.api.Test
 import java.util.*
 
+/**
+ * https://leetcode.com/problems/course-schedule-ii
+ */
 class CourseScheduleII {
 
     fun findOrder(numCourses: Int, prerequisites: Array<IntArray>): IntArray {
