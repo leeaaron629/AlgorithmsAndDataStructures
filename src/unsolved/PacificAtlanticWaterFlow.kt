@@ -1,67 +1,90 @@
 package unsolved
 
 import org.junit.jupiter.api.Test
+import java.util.*
 
 /**
  * https://leetcode.com/problems/pacific-atlantic-water-flow/
  */
 class PacificAtlanticWaterFlow {
 
+    data class Score(
+        var atlantic: Int = 0,
+        var pacific: Int = 0,
+        var calculated: Boolean = false
+    )
+
     fun pacificAtlantic(heights: Array<IntArray>): List<List<Int>> {
+
 
         if (heights.isEmpty()) return emptyList()
 
-        val islandWidth = heights[0].size
-        val islandLength = heights.size
-        val atlantic: Array<BooleanArray> = Array(islandLength) { BooleanArray(islandWidth) { false } }
-        val pacific: Array<BooleanArray> = Array(islandLength) { BooleanArray(islandWidth) { false } }
+        val rowLength = heights[0].size
+        val colLength = heights.size
 
-        heights.forEachIndexed { x, row ->
-            row.forEachIndexed { y, value ->
-                println("Starting dfs on ... ($x, $y)")
-                val visited = Array(islandLength) { IntArray(islandWidth) { 0 } }
-                dfs(x = x, y = y, islandWidth = islandWidth, islandLength = islandLength, visited = visited, atlantic = atlantic, pacific = pacific, heights = heights)
+        // +1 for each time it reaches the atlantic or the pacific
+        val scoreGrid = Array(colLength) { Array(rowLength) { Score() } }
+
+        val toVisit: Queue<List<Int>> = LinkedList()
+        heights.forEachIndexed { x, rowOfHeights ->
+            rowOfHeights.forEachIndexed { y, _ ->
+                toVisit.add(listOf(x,y))
             }
         }
 
-        return emptyList()
+        while (toVisit.isNotEmpty()) {
+            val coords = toVisit.remove()
+//            println("Calculating scores for ${coords[0]}, ${coords[1]}")
+            val calculatedScore = calcScoresDfs(
+                x = coords[0], y = coords[1],
+                islandWidth = rowLength, islandLength = colLength,
+                heights = heights, scoreGrid = scoreGrid, visited = Array(colLength) { BooleanArray(rowLength) { false } }
+            )
+            scoreGrid[coords[0]][coords[1]] = calculatedScore
+        }
+
+        // Collect the calculation into the list of results
+        val results = mutableListOf<List<Int>>()
+        scoreGrid.forEachIndexed { x, rowOfScores ->
+            rowOfScores.forEachIndexed { y, score ->
+                if (score.atlantic > 0 && score.pacific > 0) {
+                    results.add(listOf(x,y))
+                }
+            }
+        }
+
+        return results
     }
 
-    private fun dfs(
+    private fun calcScoresDfs(
         x: Int,
         y: Int,
         islandWidth: Int,
         islandLength: Int,
-        visited: Array<IntArray>,
-        atlantic: Array<BooleanArray>,
-        pacific: Array<BooleanArray>,
-        heights: Array<IntArray>
-    ): Pair<Int, Int> {
+        heights: Array<IntArray>,
+        scoreGrid: Array<Array<Score>>,
+        visited: Array<BooleanArray>
+    ): Score {
 
-        if (visited[x][y] == 1) Pair(0, 0)
-        // println("Visiting ($x, $y) - ${heights[x][y]}")
-        visited[x][y] = 1 // Set to 1 for visited
-        if (isByThePacific(x = x, y = y)) atlantic[x][y] = true
-        if (isByTheAtlantic(x = x, y = y, islandWidth = islandWidth, islandLength = islandLength)) pacific[x][y] = true
+//        println("$x, $y")
+        visited[x][y] = true
+        if (scoreGrid[x][y].calculated) return scoreGrid[x][y]
 
-//        val score = when {
-//            isByThePacific && isByTheAtlantic -> Pair(1, 1)
-//            isByThePacific -> Pair(1, 0)
-//            isByTheAtlantic -> Pair(0, 1)
-//            else -> Pair(0, 0)
-//        }
+        val score = Score()
 
-        // TODO - Stubbed values remove later
-        val score = Pair(0, 0)
+        if (isByThePacific(x, y)) ++score.pacific
+        if (isByTheAtlantic(x, y, islandWidth, islandLength)) ++score.atlantic
+        score.calculated = true
 
-        val childrenScores = getValidNearbyLands(x, y, islandWidth, islandLength).map { (nextX, nextY) ->
-            if (canFlowTo(sourceX = x, sourceY = y, targetX = nextX, targetY = nextY, heights = heights)) {
-                dfs(nextX, nextY, islandWidth, islandLength, visited, atlantic, pacific, heights)
-            } else {
-                Pair(0, 0)
-            }
-        }
-        return childrenScores.fold(score) { acc, aScore -> Pair(acc.first + aScore.first, acc.second + aScore.second) }
+        val validLands = getValidNearbyLands(x, y, islandWidth, islandLength)
+            .filter { (x2, y2) -> !visited[x2][y2] }
+            .filter { (x2, y2) -> canFlowTo(sourceX = x, sourceY = y, targetX = x2, targetY = y2, heights) }
+        val downstreamScores = validLands
+            .map { (x, y) -> calcScoresDfs(x, y, islandWidth, islandLength, heights, scoreGrid, visited) }
+        val finalScore = downstreamScores
+            .fold(score) { acc, s -> Score(atlantic = acc.atlantic + s.atlantic, pacific = acc.pacific + s.pacific, calculated = true) }
+
+        return finalScore
     }
 
     private fun canFlowTo(sourceX: Int, sourceY: Int, targetX: Int, targetY: Int, heights: Array<IntArray>): Boolean {
@@ -75,7 +98,7 @@ class PacificAtlanticWaterFlow {
             x + 1 to y,
             x - 1 to y
         ).filter { (x, y) ->
-            x in 0 until islandWidth && y in 0 until islandLength
+            x in 0 until islandLength && y in 0 until islandWidth
         }
     }
 
@@ -102,6 +125,32 @@ internal class PacificAtlanticWaterFlowTest {
             .let {
                 assert(it.isNotEmpty())
             }
+    }
+
+    @Test
+    fun `find pacific atlantic squares - case 1`() {
+        // [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
+        val heights = arrayOf(
+            intArrayOf(1,2,2,3,5),
+            intArrayOf(3,2,3,4,4),
+            intArrayOf(2,4,5,3,1),
+            intArrayOf(6,7,1,4,5),
+            intArrayOf(5,1,1,2,4)
+        )
+        driver.pacificAtlantic(heights = heights)
+            .also { println(it) }
+    }
+
+    @Test
+    fun `find pacific atlanctic squares - `() {
+        // [[1,1],[1,1],[1,1]]
+        val heights = arrayOf(
+            intArrayOf(1,1),
+            intArrayOf(1,1),
+            intArrayOf(1,1)
+        )
+        driver.pacificAtlantic(heights = heights)
+            .also { println(it) }
     }
 
 }
