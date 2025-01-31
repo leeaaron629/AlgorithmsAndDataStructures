@@ -49,6 +49,7 @@ class UnionFind:
         print(f"ranks={self.rank}")
         print(f"sizes={self.size}")
     
+print("Check path compression is happening on find")
 uf = UnionFind()
 uf.union(0,1)
 uf.union(2,3)
@@ -66,3 +67,22 @@ res = uf.find(0)
 res = uf.find(4)
 print("After path compression")
 uf.print_state()
+
+print("Check size is correct after union")
+uf = UnionFind()
+# expect size to be 3
+uf.union(0,1)
+uf.union(1,2)
+size = uf.get_size(2)
+parent = uf.find(2)
+print(f"size={size}, parent={parent}")
+# expect size to be 4
+uf.union(3,4)
+uf.union(4,5)
+uf.union(5,6)
+size = uf.get_size(6)
+parent = uf.find(6)
+print(f"size={size}, parent={parent}")
+uf.union(6, 2)
+# we don't need to update size of because get_size() will always derive the size from the parent
+print(f"size_of_6={uf.get_size(6)}, size_of_2={uf.get_size(2)}")
