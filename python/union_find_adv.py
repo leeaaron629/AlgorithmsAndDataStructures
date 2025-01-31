@@ -6,16 +6,12 @@ class UnionFind:
         self.parent: Dict[int, int] = {}
         self.rank: DefaultDict[int, int] = defaultdict(int)
         self.size: DefaultDict[int, int] = defaultdict(int)
-        
-    def make_set(self, x: int) -> None:
-        if x not in self.parent:
-            self.parent[x] = x
-            self.size[x] = 1
             
     def find(self, x: int) -> int:
         # Initialize if not exists
         if x not in self.parent:
-            self.make_set(x)
+            self.parent[x] = x
+            self.size[x] = 1
         if self.parent[x] != x:
             self.parent[x] = self.find(self.parent[x])
         return self.parent[x]
