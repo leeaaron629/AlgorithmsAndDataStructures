@@ -5,7 +5,7 @@ package solved
  */
 object MaxNumberOfOccurrencesOfSubstring {
     fun maxFreq(s: String, maxLetters: Int, minSize: Int, maxSize: Int): Int {
-        val substringCounts = mutableMapOf<String, Int>().withDefault { 0 }
+        val substringCounts = mutableMapOf<String, Int>()
         for (i in 0..s.length - minSize) {
             val substring = s.substring(startIndex = i, endIndex = i + minSize)
             if (substring.toSet().size <= maxLetters) {
